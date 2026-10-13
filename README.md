@@ -32,8 +32,8 @@ Full numbers, method and caveats: [docs/RESULTS.md](docs/RESULTS.md).
 | Time sync | 3 of 9 injected LiDAR clock offsets corrected to within 14 ms, **0 wrong corrections**; low-contrast flights flagged instead of guessed |
 | Reproducibility | same flights ⇒ same dataset version id; two DDP training runs ⇒ **bit-identical weights** |
 | Loading | 3,676 samples/s from shards vs. 83 samples/s decoding raw logs (single process) |
-| Camera + LiDAR fusion | test mAP 0.673 vs. 0.622 camera-only (+0.050, 95% CI +0.029…+0.070); night 0.552 vs. 0.385 |
-| Validation gate | blocks camera-only vs. fusion on 7 checks (night, heavy fog, vehicle, person…); passes an identical rerun with Δ = 0 |
+| Camera + LiDAR fusion | night mAP 0.55–0.58 across 3 training seeds vs. 0.385 camera-only; overall mAP varies by 0.057 between seeds, more than most single-run differences |
+| Validation gate | blocks camera-only vs. fusion on 7 checks (night, heavy fog, vehicle, person…); passes an identical rerun with Δ = 0; frame bootstrap does not capture seed noise (see results) |
 | Label audit | finds 87% of shifted boxes and 66% of wrong classes in a noisy annotation batch; flags are 2.5× richer in errors than random review |
 | Metadata + search | lighting tags 88% and fog tags 79% accurate on unseen flights; NL query precision 33–92% depending on query |
 | Auto-labelling | 22% of unlabelled frames auto-accepted at 98% box precision but only 35% recall (confident misses slip through); the model trained with them recovers 77% of the gap to full human labels |

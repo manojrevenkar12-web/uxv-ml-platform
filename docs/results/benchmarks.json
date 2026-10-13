@@ -489,6 +489,30 @@
       "weights": "74fe03101ef888b3",
       "dataset_version": "969966aae5426c70",
       "train_seconds": null
+    },
+    "fusion-seed1": {
+      "test_mAP": 0.6159479026317572,
+      "AP_vehicle": 0.8400623097797797,
+      "AP_person": 0.25097708903982147,
+      "AP_building": 0.7568043090756708,
+      "mAP_day": 0.5908650459459713,
+      "mAP_dusk": 0.6553993601934184,
+      "mAP_night": 0.566233733598951,
+      "weights": "245dbcb1dc3b480a",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    },
+    "fusion-seed2": {
+      "test_mAP": 0.6485421721105871,
+      "AP_vehicle": 0.8021485673130733,
+      "AP_person": 0.38950019698866617,
+      "AP_building": 0.7539777520300218,
+      "mAP_day": 0.7128693597259286,
+      "mAP_dusk": 0.6488125566775291,
+      "mAP_night": 0.5809170999848863,
+      "weights": "e72913bc7e8d5876",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
     }
   },
   "enrichment": {
@@ -650,5 +674,16 @@
     "review_frames": 1229,
     "auto_box_precision": 0.981042654028436,
     "auto_box_recall": 0.34673366834170855
+  },
+  "seed_spread": {
+    "test_mAP": [
+      0.6726008718756313,
+      0.6159479026317572,
+      0.6485421721105871
+    ],
+    "min": 0.6159479026317572,
+    "max": 0.6726008718756313,
+    "range": 0.056652969243874085,
+    "std": 0.0284334496716762
   }
 }

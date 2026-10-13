@@ -57,17 +57,28 @@ same shard digests (tested); changing one parameter produces a new id.
 | fusion, trained without sync correction | 0.690 | 0.823 | 0.475 | 0.771 | 0.822 | 0.664 | 0.562 |
 | fusion, trusted-vendor labels only (38% fewer frames) | 0.636 | 0.834 | 0.332 | 0.741 | 0.729 | 0.656 | 0.498 |
 
-- **Reproducibility.** Two DDP runs with the same config and dataset version
-  produced bit-identical weights.
-- **Fusion helps where the camera struggles.** LiDAR adds +0.05 mAP overall and
-  most of it comes from night (+0.17, day/night slices from simulator truth)
-  and heavy fog (+0.23 on the enrichment-tagged slice). Daytime is unchanged.
-- **Sync correction showed no measurable benefit** at this scale: only 3 of 36
-  flights were corrected, and the model trained on uncorrected data scored
-  slightly higher. See the seed spread above before reading anything into
-  differences of this size.
-- **Noisy labels vs. less data.** Dropping the noisy annotation vendor (≈26% of
-  its boxes carry an error) cost more than the noise did.
+**Seed-to-seed spread.** The same fusion config trained with seeds 0, 1 and 2:
+
+| seed | test mAP | day | dusk | night |
+|---|---|---|---|---|
+| 0 | 0.673 | 0.762 | 0.683 | 0.552 |
+| 1 | 0.616 | 0.591 | 0.655 | 0.566 |
+| 2 | 0.649 | 0.713 | 0.649 | 0.581 |
+
+Overall mAP moves by up to **0.057 between seeds**, which is larger than most
+of the single-run differences in the table above. That changes how to read it:
+
+- **Reproducibility.** Two DDP runs with the same config, seed and dataset
+  version produced bit-identical weights; different seeds do not, and the
+  difference is large.
+- **Fusion's robust gain is at night.** Night mAP is 0.55–0.58 for all three
+  fusion seeds vs. 0.385 camera-only, and heavy fog improves by +0.23 on the
+  enrichment-tagged slice. The +0.05 overall gain of seed 0 is within the seed
+  spread, so it is not a reliable claim on its own.
+- **Sync correction and trusted-only labels:** both differences (+0.017 for the
+  uncorrected dataset, −0.037 for trusted-only labels) are inside the seed
+  spread, so neither result is conclusive at this scale. Only 3 of 36 flights
+  were sync-corrected.
 
 ## 4. Validation gate
 
@@ -79,8 +90,12 @@ same shard digests (tested); changing one parameter produces a new id.
 | fusion without sync correction vs. fusion | +0.017 [+0.005, +0.026] | promote |
 
 The bootstrap resamples test frames, so it captures test-set sampling noise
-but not training-run noise; that is what the seed spread in section 3
-measures.
+but not training-run noise. Section 3 shows that training noise is the larger
+of the two here: the "significant" +0.017 for the uncorrected dataset is well
+inside the 0.057 seed spread. A promotion decision on a close call should use
+several seeds per candidate (or a seed-noise floor in the gate config); the
+gate already blocks the large, consistent regressions such as camera-only at
+night.
 
 ## 5. AI tooling for data workflows
 
