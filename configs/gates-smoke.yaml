@@ -1,5 +1,5 @@
 # Smoke run: checks the gate machinery end to end; the floor is low because
-# the smoke model trains for two epochs on a tiny dataset.
+# the smoke model trains for a few epochs on a tiny dataset.
 min_map: 0.02
 overall_tolerance: 0.01
 slice_tolerance: 0.03

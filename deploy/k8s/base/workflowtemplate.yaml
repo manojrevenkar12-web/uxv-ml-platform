@@ -13,10 +13,10 @@ spec:
     parameters:
       - {name: image, value: "uxvml:dev"}
       - {name: dataset, value: uxv}
-      - {name: flights, value: "9"}
-      - {name: duration, value: "10"}
+      - {name: flights, value: "12"}
+      - {name: duration, value: "12"}
       - {name: seed, value: "7"}
-      - {name: epochs, value: "2"}
+      - {name: epochs, value: "8"}
       - {name: nproc, value: "2"}
       - {name: inputs, value: "rgb+lidar"}
       - {name: gates, value: configs/gates-smoke.yaml}
