@@ -1,4 +1,4 @@
-# Full benchmark pipeline (about 15 min on 2 CPU cores).
+# Full benchmark pipeline (about 25 min on 2 CPU cores).
 workdir: work
 workers: 2
 simulate: {flights: 36, seed: 2026, duration_s: 32}

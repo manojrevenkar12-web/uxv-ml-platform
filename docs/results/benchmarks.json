@@ -1,0 +1,654 @@
+{
+  "dataset": {
+    "version": "969966aae5426c70",
+    "bytes": 210495961,
+    "camera_faults_dropped": 65,
+    "flights": 36,
+    "lidar_missing_frames": 142,
+    "samples": 5695,
+    "split_samples": {
+      "test": 948,
+      "train": 3793,
+      "val": 954
+    },
+    "suspect_boxes": 148,
+    "sync_corrected_flights": [
+      "flight_0013",
+      "flight_0027",
+      "flight_0033"
+    ],
+    "sync_unverified_flights": [
+      "flight_0000",
+      "flight_0002",
+      "flight_0004",
+      "flight_0005",
+      "flight_0006",
+      "flight_0008",
+      "flight_0009",
+      "flight_0010",
+      "flight_0011",
+      "flight_0014",
+      "flight_0015",
+      "flight_0016",
+      "flight_0017",
+      "flight_0019",
+      "flight_0020",
+      "flight_0021",
+      "flight_0022",
+      "flight_0023",
+      "flight_0026",
+      "flight_0028",
+      "flight_0029",
+      "flight_0030",
+      "flight_0031",
+      "flight_0032",
+      "flight_0034",
+      "flight_0035"
+    ]
+  },
+  "qc": {
+    "camera_faults": {
+      "injected": 65,
+      "flagged": 65,
+      "true_positive": 65
+    },
+    "sync": {
+      "flights": 36,
+      "flights_with_injected_offset": 9,
+      "corrected": 3,
+      "max_abs_error_ms_when_corrected": 14.000000000000012,
+      "wrong_corrections": 0,
+      "unverified_flights": 26,
+      "unverified_with_offset": 6,
+      "detail": [
+        {
+          "flight": "flight_0000",
+          "true_offset_s": 0.179,
+          "status": "unverified",
+          "estimated_s": 0.19,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0001",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": 0.01,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0002",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.09,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0003",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": 0.0,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0004",
+          "true_offset_s": 0.121,
+          "status": "unverified",
+          "estimated_s": 0.05,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0005",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.02,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0006",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.05,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0007",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": 0.0,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0008",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": -0.02,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0009",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.01,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0010",
+          "true_offset_s": -0.173,
+          "status": "unverified",
+          "estimated_s": -0.07,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0011",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": -0.04,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0012",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": 0.01,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0013",
+          "true_offset_s": -0.16,
+          "status": "corrected",
+          "estimated_s": -0.17,
+          "applied_s": -0.17,
+          "tod": "dusk",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0014",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.0,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0015",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": -0.03,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0016",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.01,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0017",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": -0.03,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0018",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": 0.0,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0019",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.21,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0020",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.19,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0021",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.02,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0022",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.02,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0023",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": -0.08,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0024",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": -0.02,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0025",
+          "true_offset_s": 0.0,
+          "status": "ok",
+          "estimated_s": -0.01,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0026",
+          "true_offset_s": 0.103,
+          "status": "unverified",
+          "estimated_s": 0.24,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0027",
+          "true_offset_s": -0.194,
+          "status": "corrected",
+          "estimated_s": -0.18,
+          "applied_s": -0.18,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0028",
+          "true_offset_s": -0.185,
+          "status": "unverified",
+          "estimated_s": -0.15,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0029",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.11,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0030",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.03,
+          "applied_s": 0.0,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0031",
+          "true_offset_s": -0.165,
+          "status": "unverified",
+          "estimated_s": 0.13,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.55
+        },
+        {
+          "flight": "flight_0032",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": -0.25,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0033",
+          "true_offset_s": 0.128,
+          "status": "corrected",
+          "estimated_s": 0.12,
+          "applied_s": 0.12,
+          "tod": "day",
+          "fog": 0.0
+        },
+        {
+          "flight": "flight_0034",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.03,
+          "applied_s": 0.0,
+          "tod": "dusk",
+          "fog": 0.3
+        },
+        {
+          "flight": "flight_0035",
+          "true_offset_s": 0.0,
+          "status": "unverified",
+          "estimated_s": 0.0,
+          "applied_s": 0.0,
+          "tod": "night",
+          "fog": 0.0
+        }
+      ]
+    },
+    "lidar_gaps": {
+      "injected": 4,
+      "flagged": 4,
+      "true_positive": 4
+    },
+    "size_rule": {
+      "wrong_class_errors": 123,
+      "caught": 83,
+      "flags_on_noisy_flights": 148,
+      "flags_that_are_real_errors": 148
+    }
+  },
+  "throughput": {
+    "raw_decode_and_project_sps": 83.26606423251187,
+    "one_file_per_sample_sps": 2776.1542063729767,
+    "shard_stream_sps": 3676.4589557827035,
+    "note": "single process, warm OS page cache, local disk"
+  },
+  "models": {
+    "fusion": {
+      "test_mAP": 0.6726008718756313,
+      "AP_vehicle": 0.8444727207765396,
+      "AP_person": 0.43259612465878383,
+      "AP_building": 0.7407337701915707,
+      "mAP_day": 0.7620260632204982,
+      "mAP_dusk": 0.6828923533406992,
+      "mAP_night": 0.551872882268185,
+      "weights": "bc56bf03685694a6",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    },
+    "camera-only": {
+      "test_mAP": 0.6224140477068838,
+      "AP_vehicle": 0.7475031133192714,
+      "AP_person": 0.36989654133476596,
+      "AP_building": 0.7498424884666139,
+      "mAP_day": 0.7621833285747509,
+      "mAP_dusk": 0.6604496760983918,
+      "mAP_night": 0.3847755203109155,
+      "weights": "f4a32645a8f28ab2",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    },
+    "fusion-repro": {
+      "test_mAP": 0.6726008718756313,
+      "AP_vehicle": 0.8444727207765396,
+      "AP_person": 0.43259612465878383,
+      "AP_building": 0.7407337701915707,
+      "mAP_day": 0.7620260632204982,
+      "mAP_dusk": 0.6828923533406992,
+      "mAP_night": 0.551872882268185,
+      "weights": "bc56bf03685694a6",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    },
+    "fusion-nosync": {
+      "test_mAP": 0.6895843025843761,
+      "AP_vehicle": 0.8226107677700518,
+      "AP_person": 0.47466977991449816,
+      "AP_building": 0.7714723600685782,
+      "mAP_day": 0.8215225140300547,
+      "mAP_dusk": 0.6641405075006502,
+      "mAP_night": 0.5615279582831963,
+      "weights": "850ff160382928b4",
+      "dataset_version": "f67539b7a2b242b7",
+      "train_seconds": null
+    },
+    "fusion-trusted-labels": {
+      "test_mAP": 0.6356878778733284,
+      "AP_vehicle": 0.8341903662060937,
+      "AP_person": 0.331847716156342,
+      "AP_building": 0.7410255512575494,
+      "mAP_day": 0.7285835919284405,
+      "mAP_dusk": 0.6557178505393625,
+      "mAP_night": 0.4978303799970912,
+      "weights": "32d5b294f77852a8",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    },
+    "autolabel-m0": {
+      "test_mAP": 0.5215285309936758,
+      "AP_vehicle": 0.7675178031664175,
+      "AP_person": 0.07856297875143546,
+      "AP_building": 0.7185048110631745,
+      "mAP_day": 0.5824835216872329,
+      "mAP_dusk": 0.5709647343676724,
+      "mAP_night": 0.44349630821177066,
+      "weights": "a946866e841fc33e",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    },
+    "autolabel-m1": {
+      "test_mAP": 0.6096405744895609,
+      "AP_vehicle": 0.7922586586010523,
+      "AP_person": 0.30373479154934857,
+      "AP_building": 0.7329282733182818,
+      "mAP_day": 0.7387410109539873,
+      "mAP_dusk": 0.6152216495185144,
+      "mAP_night": 0.5043371485562623,
+      "weights": "74fe03101ef888b3",
+      "dataset_version": "969966aae5426c70",
+      "train_seconds": null
+    }
+  },
+  "enrichment": {
+    "calibration_flights": 6,
+    "evaluated_frames": 4741,
+    "lighting_accuracy": 0.8776629403079519,
+    "fog_accuracy": 0.7903395908036279,
+    "count_mae_vehicle": 0.16038589086523966,
+    "count_mae_person": 0.4407597226409406,
+    "count_mae_building": 0.2007838408200181
+  },
+  "search": {
+    "text_queries": [
+      {
+        "query": "night frames with at least 3 vehicles",
+        "returned": 243,
+        "precision": 0.7448559670781894,
+        "recall": 0.6135593220338983,
+        "relevant_in_dataset": 295
+      },
+      {
+        "query": "foggy dusk frames with people",
+        "returned": 221,
+        "precision": 0.751131221719457,
+        "recall": 0.4019370460048426,
+        "relevant_in_dataset": 413
+      },
+      {
+        "query": "daytime frames with at least 2 buildings below 35 m",
+        "returned": 18,
+        "precision": 0.3333333333333333,
+        "recall": 0.2727272727272727,
+        "relevant_in_dataset": 22
+      },
+      {
+        "query": "heavy fog with more than 2 vehicles",
+        "returned": 140,
+        "precision": 0.5785714285714286,
+        "recall": 0.5294117647058824,
+        "relevant_in_dataset": 153
+      },
+      {
+        "query": "clear night frames with people",
+        "returned": 368,
+        "precision": 0.5380434782608695,
+        "recall": 0.30793157076205285,
+        "relevant_in_dataset": 643
+      },
+      {
+        "query": "crowded frames",
+        "returned": 13,
+        "precision": 0.9230769230769231,
+        "recall": 0.8,
+        "relevant_in_dataset": 15
+      }
+    ],
+    "similar_same_condition_p_at_10": 0.5779999999999998,
+    "random_same_condition_p_at_10": 0.166
+  },
+  "label_audit": {
+    "frames_audited": 1424,
+    "boxes": 2621,
+    "flags": 1254,
+    "flags_pointing_at_real_errors": 533,
+    "errors": {
+      "missing": 355,
+      "shifted": 324,
+      "wrong_class": 122
+    },
+    "caught": {
+      "missing": 100,
+      "shifted": 283,
+      "wrong_class": 81
+    }
+  },
+  "gates": {
+    "fusion vs camera-only": {
+      "decision": "promote",
+      "failed": [],
+      "mAP_delta": {
+        "delta": 0.050186824168747535,
+        "ci_low": 0.029530825813738545,
+        "ci_high": 0.06995299032920782
+      }
+    },
+    "camera-only vs fusion": {
+      "decision": "block",
+      "failed": [
+        "no_regression[mAP]",
+        "no_regression[AP/vehicle]",
+        "no_regression[AP/person]",
+        "no_regression[lighting=night/mAP]",
+        "no_regression[fog=heavy/mAP]",
+        "no_regression[fog=none/mAP]",
+        "no_regression[altitude_band=low/mAP]"
+      ],
+      "mAP_delta": {
+        "delta": -0.050186824168747535,
+        "ci_low": -0.06995299032920782,
+        "ci_high": -0.029530825813738545
+      }
+    },
+    "fusion-repro vs fusion": {
+      "decision": "promote",
+      "failed": [],
+      "mAP_delta": {
+        "delta": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0
+      }
+    },
+    "fusion-nosync vs fusion": {
+      "decision": "promote",
+      "failed": [],
+      "mAP_delta": {
+        "delta": 0.01698343070874475,
+        "ci_low": 0.005063934472215247,
+        "ci_high": 0.026321599284115395
+      }
+    },
+    "fusion vs fusion-trusted-labels": {
+      "decision": "promote",
+      "failed": [],
+      "mAP_delta": {
+        "delta": 0.03691299400230297,
+        "ci_low": 0.022831278444265784,
+        "ci_high": 0.051021534502111006
+      }
+    }
+  },
+  "autolabel": {
+    "labelled_flights": [
+      "flight_0001",
+      "flight_0007",
+      "flight_0012",
+      "flight_0026",
+      "flight_0031"
+    ],
+    "pool_flights": [
+      "flight_0004",
+      "flight_0005",
+      "flight_0008",
+      "flight_0010",
+      "flight_0014",
+      "flight_0025",
+      "flight_0027",
+      "flight_0030",
+      "flight_0033",
+      "flight_0034"
+    ],
+    "labelled_frames": 790,
+    "pool_frames": 1579,
+    "thresholds": {
+      "vehicle": 0.7623960375785828,
+      "person": 0.44008782505989075,
+      "building": 0.6318996548652649
+    },
+    "auto_frames": 350,
+    "review_frames": 1229,
+    "auto_box_precision": 0.981042654028436,
+    "auto_box_recall": 0.34673366834170855
+  }
+}
