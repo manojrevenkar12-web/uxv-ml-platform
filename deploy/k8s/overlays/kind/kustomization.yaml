@@ -1,0 +1,5 @@
+# Local / CI cluster: CPU only, image side-loaded with `kind load docker-image`.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base

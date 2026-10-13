@@ -1,0 +1,41 @@
+# Least-privilege identity for pipeline pods: the Argo executor only needs to
+# report step results; pods get no other API access.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: uxv-pipeline
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: uxv-pipeline-executor
+rules:
+  - apiGroups: [argoproj.io]
+    resources: [workflowtaskresults]
+    verbs: [create, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: uxv-pipeline-executor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: uxv-pipeline-executor
+subjects:
+  - kind: ServiceAccount
+    name: uxv-pipeline
+---
+# Shared working volume for shards, models and the MLflow database. In
+# production, shards live in S3-compatible object storage (store URI s3://...)
+# and this volume only holds the per-node read cache.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uxv-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi

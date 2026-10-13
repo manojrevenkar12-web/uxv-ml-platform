@@ -1,0 +1,135 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: uxv-perception
+  labels: {app.kubernetes.io/part-of: uxv-ml-platform}
+spec:
+  entrypoint: pipeline
+  serviceAccountName: uxv-pipeline
+  podGC: {strategy: OnWorkflowSuccess}
+  ttlStrategy: {secondsAfterCompletion: 86400}
+  securityContext: {runAsNonRoot: true, runAsUser: 1000, fsGroup: 1000}
+  arguments:
+    parameters:
+      - {name: image, value: "uxvml:dev"}
+      - {name: dataset, value: uxv}
+      - {name: flights, value: "9"}
+      - {name: duration, value: "10"}
+      - {name: seed, value: "7"}
+      - {name: epochs, value: "2"}
+      - {name: nproc, value: "2"}
+      - {name: inputs, value: "rgb+lidar"}
+      - {name: gates, value: configs/gates-smoke.yaml}
+  volumes:
+    - name: data
+      persistentVolumeClaim: {claimName: uxv-data}
+
+  templates:
+    - name: pipeline
+      dag:
+        tasks:
+          - name: prepare
+            template: prepare
+          - name: simulate
+            template: simulate
+            depends: prepare
+          - name: ingest
+            template: ingest
+            depends: simulate
+          - name: train
+            template: train
+            depends: ingest
+            arguments:
+              parameters:
+                - {name: version, value: "{{tasks.ingest.outputs.parameters.version}}"}
+          - name: enrich
+            template: enrich
+            depends: train
+            arguments:
+              parameters:
+                - {name: version, value: "{{tasks.ingest.outputs.parameters.version}}"}
+          - name: validate
+            template: validate
+            depends: enrich
+            arguments:
+              parameters:
+                - {name: version, value: "{{tasks.ingest.outputs.parameters.version}}"}
+
+    # the volume is provisioned root-owned on some storage classes
+    - name: prepare
+      securityContext: {runAsNonRoot: false, runAsUser: 0}
+      container:
+        image: "{{workflow.parameters.image}}"
+        command: [sh, -c]
+        args: ["mkdir -p /data/sim /data/store /data/models && chown -R 1000:1000 /data"]
+        volumeMounts: [{name: data, mountPath: /data}]
+
+    - name: simulate
+      retryStrategy: {limit: 2}
+      container:
+        image: "{{workflow.parameters.image}}"
+        args: [simulate, --out, /data/sim, --flights, "{{workflow.parameters.flights}}",
+               --seed, "{{workflow.parameters.seed}}", --duration, "{{workflow.parameters.duration}}"]
+        resources: {requests: {cpu: "1", memory: 1Gi}, limits: {memory: 2Gi}}
+        volumeMounts: [{name: data, mountPath: /data}]
+
+    - name: ingest
+      retryStrategy: {limit: 2}
+      outputs:
+        parameters:
+          - name: version
+            valueFrom: {path: /tmp/version}
+      container:
+        image: "{{workflow.parameters.image}}"
+        args: [ingest, --raw, /data/sim/raw, --store, /data/store, --dataset, "{{workflow.parameters.dataset}}",
+               --shard-size, "64", --val-per-group, "1", --test-per-group, "1",
+               --version-file, /tmp/version]
+        resources: {requests: {cpu: "1", memory: 1Gi}, limits: {memory: 3Gi}}
+        volumeMounts: [{name: data, mountPath: /data}]
+
+    - name: train
+      inputs:
+        parameters: [{name: version}]
+      container:
+        image: "{{workflow.parameters.image}}"
+        command: [torchrun]
+        args: [--standalone, "--nproc_per_node={{workflow.parameters.nproc}}", -m, uxvml.cli, train,
+               --store, /data/store, --tracking-uri, "sqlite:////data/mlflow.db",
+               --out, "/data/models/{{inputs.parameters.version}}",
+               --dataset, "{{workflow.parameters.dataset}}", --version, "{{inputs.parameters.version}}",
+               --inputs, "{{workflow.parameters.inputs}}", --epochs, "{{workflow.parameters.epochs}}",
+               --batch-size, "16", --run-name, "argo-{{workflow.name}}"]
+        env:
+          - {name: OMP_NUM_THREADS, value: "1"}
+        resources: {requests: {cpu: "2", memory: 2Gi}, limits: {memory: 4Gi}}
+        volumeMounts:
+          - {name: data, mountPath: /data}
+          - {name: dshm, mountPath: /dev/shm}
+      volumes:
+        - name: dshm
+          emptyDir: {medium: Memory, sizeLimit: 1Gi}
+
+    - name: enrich
+      inputs:
+        parameters: [{name: version}]
+      container:
+        image: "{{workflow.parameters.image}}"
+        args: [enrich, --store, /data/store, --dataset, "{{workflow.parameters.dataset}}",
+               --version, "{{inputs.parameters.version}}",
+               --model, "/data/models/{{inputs.parameters.version}}", --truth, /data/sim/truth]
+        resources: {requests: {cpu: "1", memory: 1Gi}, limits: {memory: 3Gi}}
+        volumeMounts: [{name: data, mountPath: /data}]
+
+    - name: validate
+      inputs:
+        parameters: [{name: version}]
+      container:
+        image: "{{workflow.parameters.image}}"
+        args: [validate, --store, /data/store, --dataset, "{{workflow.parameters.dataset}}",
+               --version, "{{inputs.parameters.version}}",
+               --candidate, "/data/models/{{inputs.parameters.version}}",
+               --gates, "{{workflow.parameters.gates}}",
+               --report, "/data/models/{{inputs.parameters.version}}/validation.json",
+               --promote, --tracking-uri, "sqlite:////data/mlflow.db"]
+        resources: {requests: {cpu: "1", memory: 1Gi}, limits: {memory: 3Gi}}
+        volumeMounts: [{name: data, mountPath: /data}]

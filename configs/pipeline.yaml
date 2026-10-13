@@ -1,0 +1,7 @@
+# Full benchmark pipeline (about 15 min on 2 CPU cores).
+workdir: work
+workers: 2
+simulate: {flights: 36, seed: 2026, duration_s: 32}
+ingest: {dataset: uxv}
+train: {run_name: fusion, inputs: rgb+lidar, epochs: 14, world_size: 2}
+validate: {gates: configs/gates.yaml, model_name: uxv-detector}

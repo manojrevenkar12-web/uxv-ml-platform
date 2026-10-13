@@ -1,0 +1,7 @@
+# Tiny end-to-end run for CI (a couple of minutes on a laptop).
+workdir: work-smoke
+workers: 2
+simulate: {flights: 9, seed: 7, duration_s: 10}
+ingest: {dataset: uxv, params: {n_val_per_tod: 1, n_test_per_tod: 1, shard_size: 64}}
+train: {run_name: fusion-smoke, inputs: rgb+lidar, epochs: 2, world_size: 2, batch_size: 16}
+validate: {gates: configs/gates-smoke.yaml, model_name: uxv-detector}

@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: uxv
+resources:
+  - namespace.yaml
+  - rbac-storage.yaml
+  - workflowtemplate.yaml
+labels:
+  - pairs: {app.kubernetes.io/name: uxv-ml-platform}
+    includeSelectors: false

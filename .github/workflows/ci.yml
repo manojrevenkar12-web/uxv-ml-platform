@@ -1,0 +1,100 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MLFLOW_DISABLE_TELEMETRY: "true"
+  DO_NOT_TRACK: "true"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - name: Install (CPU torch)
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -e ".[dev]"
+      - name: Unit + integration tests
+        run: pytest -q
+
+  pipeline-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - name: Install (CPU torch)
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -e .
+      - name: Run full DAG (simulate -> ingest -> train -> enrich -> validate)
+        run: uxvml pipeline --config configs/pipeline-smoke.yaml | tee run1.json
+      - name: Re-run must be fully cached and identical
+        run: |
+          uxvml pipeline --config configs/pipeline-smoke.yaml | tee run2.json
+          python scripts/check_cached_rerun.py run1.json run2.json
+      - name: Search and lineage work on the produced dataset
+        run: |
+          uxvml search "dark frames with at least 1 vehicle" --store work-smoke/store
+          uxvml lineage --store work-smoke/store --model "$(python -c "import json;print(json.load(open('run1.json'))['model']['model_dir'])")"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-validation-report
+          path: work-smoke/models/*/validation.*
+
+  k8s-e2e:
+    # Runs the same pipeline as an Argo Workflow on a throwaway kind cluster.
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ARGO_VERSION: v3.6.10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create kind cluster
+        uses: helm/kind-action@v1
+        with: {cluster_name: uxv}
+      - name: Install Argo Workflows + CLI
+        run: |
+          kubectl create namespace argo
+          kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/${ARGO_VERSION}/install.yaml
+          curl -sSL -o argo.gz https://github.com/argoproj/argo-workflows/releases/download/${ARGO_VERSION}/argo-linux-amd64.gz
+          gunzip argo.gz && chmod +x argo && sudo mv argo /usr/local/bin/
+          kubectl -n argo rollout status deploy/workflow-controller --timeout=180s
+      - name: Lint manifests (both overlays)
+        run: |
+          for o in kind gpu; do
+            kubectl kustomize deploy/k8s/overlays/$o > /tmp/$o.yaml
+            python3 -c "import yaml,sys; [yaml.safe_dump(d, open('/tmp/wt-$o.yaml','w')) for d in yaml.safe_load_all(open('/tmp/$o.yaml')) if d['kind']=='WorkflowTemplate']"
+            argo lint --offline /tmp/wt-$o.yaml
+          done
+      - name: Build image and load into kind
+        run: |
+          docker build --build-arg GIT_SHA=${GITHUB_SHA::7} -t uxvml:dev .
+          kind load docker-image uxvml:dev --name uxv
+      - name: Deploy and run the workflow
+        run: |
+          kubectl apply -k deploy/k8s/overlays/kind
+          argo submit -n uxv --from workflowtemplate/uxv-perception --name e2e --wait --log
+          phase=$(argo get -n uxv e2e -o json | python3 -c "import json,sys; print(json.load(sys.stdin)['status']['phase'])")
+          echo "workflow phase: $phase"
+          test "$phase" = "Succeeded"
+      - name: Debug on failure
+        if: failure()
+        run: |
+          argo get -n uxv e2e || true
+          kubectl get pods -A || true
+          kubectl -n uxv describe pods | tail -n 200 || true
