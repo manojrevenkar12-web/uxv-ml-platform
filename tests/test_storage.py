@@ -52,3 +52,30 @@ def test_cached_store_hits_and_eviction(tmp_path):
     cache.get(digests[-1])
     assert cache.hits == 1
     assert cache.get(digests[0]) == bytes([0]) * 1000  # evicted entries are re-fetched
+
+
+def test_s3_backend_with_cache(tmp_path, monkeypatch):
+    moto = pytest.importorskip("moto")
+    import boto3
+
+    from uxvml.data.store import S3Store, open_store
+
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test")
+    monkeypatch.setenv("AWS_DEFAULT_REGION", "eu-central-1")
+    monkeypatch.delenv("AWS_ENDPOINT_URL", raising=False)
+    with moto.mock_aws():
+        boto3.client("s3").create_bucket(Bucket="uxv", CreateBucketConfiguration={"LocationConstraint": "eu-central-1"})
+        s3 = S3Store("uxv", "datasets")
+        d = s3.put(b"shard-bytes")
+        assert s3.exists(d) and s3.get(d) == b"shard-bytes"
+        s3.put_ref("datasets/x/latest", {"version": "v1"})
+        assert s3.has_ref("datasets/x/latest") and s3.get_ref("datasets/x/latest") == {"version": "v1"}
+        assert s3.list_refs("datasets/") == ["datasets/x/latest"]
+
+        monkeypatch.setenv("UXVML_CACHE_DIR", str(tmp_path / "cache"))
+        cached = open_store("s3://uxv/datasets")
+        assert isinstance(cached, CachedStore)
+        assert cached.get(d) == b"shard-bytes" and cached.get(d) == b"shard-bytes"
+        assert (cached.misses, cached.hits) == (1, 1)
+        assert cached.get_ref("datasets/x/latest")["version"] == "v1"
