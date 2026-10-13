@@ -48,6 +48,19 @@ def detection_loss(heat_logits, reg_out, heat_t, reg_t, mask):
     return lh + 0.2 * l_size + 1.0 * l_off, {"heat": lh.item(), "size": l_size.item(), "off": l_off.item()}
 
 
+def box_nms(det: np.ndarray) -> np.ndarray:
+    """Drops a detection whose centre lies inside a higher-scoring box of the same
+    class (large objects such as buildings otherwise produce several peaks)."""
+    keep = []
+    for i in np.argsort(-det[:, 5]):
+        c, x, y = det[i, 0], det[i, 1], det[i, 2]
+        if any(det[j, 0] == c and abs(det[j, 1] - x) < det[j, 3] / 2 and abs(det[j, 2] - y) < det[j, 4] / 2
+               for j in keep):
+            continue
+        keep.append(i)
+    return det[sorted(keep)]
+
+
 @torch.no_grad()
 def decode(heat_logits, reg_out, k=60, min_score=0.02):
     """-> list (per image) of arrays (M,6): cls, x, y, w, h, score."""
@@ -67,12 +80,13 @@ def decode(heat_logits, reg_out, k=60, min_score=0.02):
         x = (ix.float() + r[2]) * STRIDE
         y = (iy.float() + r[3]) * STRIDE
         w, h = torch.exp(r[0]), torch.exp(r[1])
-        out.append(torch.stack([c.float(), x, y, w, h, s], 1).cpu().numpy())
+        out.append(box_nms(torch.stack([c.float(), x, y, w, h, s], 1).cpu().numpy()))
     return out
 
 
 def match_tolerance(w, h):
-    return max(2.0, 0.35 * min(w, h))
+    """A prediction matches if its centre is within half the box's short side (min 2 px)."""
+    return max(2.0, 0.5 * min(w, h))
 
 
 def match(preds: np.ndarray, gts: np.ndarray):
