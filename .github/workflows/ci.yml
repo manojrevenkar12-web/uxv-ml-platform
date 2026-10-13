@@ -41,10 +41,10 @@ jobs:
           pip install --index-url https://download.pytorch.org/whl/cpu torch
           pip install -e .
       - name: Run full DAG (simulate -> ingest -> train -> enrich -> validate)
-        run: uxvml pipeline --config configs/pipeline-smoke.yaml | tee run1.json
+        run: uxvml pipeline --config configs/pipeline-smoke.yaml --summary run1.json
       - name: Re-run must be fully cached and identical
         run: |
-          uxvml pipeline --config configs/pipeline-smoke.yaml | tee run2.json
+          uxvml pipeline --config configs/pipeline-smoke.yaml --summary run2.json
           python scripts/check_cached_rerun.py run1.json run2.json
       - name: Search and lineage work on the produced dataset
         run: |
@@ -95,6 +95,14 @@ jobs:
       - name: Debug on failure
         if: failure()
         run: |
-          argo get -n uxv e2e || true
-          kubectl get pods -A || true
-          kubectl -n uxv describe pods | tail -n 200 || true
+          # surface the failure as annotations (readable through the checks API)
+          { argo get -n uxv e2e || true; kubectl -n uxv get pods || true; } > /tmp/state.txt 2>&1
+          for p in $(kubectl -n uxv get pods -o name 2>/dev/null); do
+            echo "== $p" >> /tmp/logs.txt
+            kubectl -n uxv logs "$p" -c main --tail=40 >> /tmp/logs.txt 2>&1 || true
+          done
+          kubectl -n uxv get events --sort-by=.lastTimestamp 2>/dev/null | tail -n 25 > /tmp/events.txt || true
+          for f in state logs events; do
+            body=$(tail -c 3500 /tmp/$f.txt 2>/dev/null | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=e2e $f::$body"
+          done

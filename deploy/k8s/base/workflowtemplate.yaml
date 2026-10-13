@@ -68,6 +68,7 @@ spec:
       retryStrategy: {limit: 2}
       container:
         image: "{{workflow.parameters.image}}"
+        command: [uxvml]  # emissary needs the command for side-loaded images
         args: [simulate, --out, /data/sim, --flights, "{{workflow.parameters.flights}}",
                --seed, "{{workflow.parameters.seed}}", --duration, "{{workflow.parameters.duration}}"]
         resources: {requests: {cpu: "1", memory: 1Gi}, limits: {memory: 2Gi}}
@@ -81,6 +82,7 @@ spec:
             valueFrom: {path: /tmp/version}
       container:
         image: "{{workflow.parameters.image}}"
+        command: [uxvml]  # emissary needs the command for side-loaded images
         args: [ingest, --raw, /data/sim/raw, --store, /data/store, --dataset, "{{workflow.parameters.dataset}}",
                --shard-size, "64", --val-per-group, "1", --test-per-group, "1",
                --version-file, /tmp/version]
@@ -114,6 +116,7 @@ spec:
         parameters: [{name: version}]
       container:
         image: "{{workflow.parameters.image}}"
+        command: [uxvml]  # emissary needs the command for side-loaded images
         args: [enrich, --store, /data/store, --dataset, "{{workflow.parameters.dataset}}",
                --version, "{{inputs.parameters.version}}",
                --model, "/data/models/{{inputs.parameters.version}}", --truth, /data/sim/truth]
@@ -125,6 +128,7 @@ spec:
         parameters: [{name: version}]
       container:
         image: "{{workflow.parameters.image}}"
+        command: [uxvml]  # emissary needs the command for side-loaded images
         args: [validate, --store, /data/store, --dataset, "{{workflow.parameters.dataset}}",
                --version, "{{inputs.parameters.version}}",
                --candidate, "/data/models/{{inputs.parameters.version}}",

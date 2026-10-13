@@ -141,7 +141,10 @@ def cmd_lineage(a):
 
 def cmd_pipeline(a):
     from .pipeline.runner import Pipeline
-    _print(Pipeline(a.config, force=a.force).run())
+    result = Pipeline(a.config, force=a.force).run()
+    _print(result)
+    if a.summary:
+        Path(a.summary).write_text(json.dumps(result, indent=2, default=str))
 
 
 def main(argv=None):
@@ -235,6 +238,7 @@ def main(argv=None):
     s = sub.add_parser("pipeline", help="run the full DAG locally with step caching")
     s.add_argument("--config", default="configs/pipeline.yaml")
     s.add_argument("--force", action="store_true")
+    s.add_argument("--summary", help="also write the run summary (JSON) to this file")
     s.set_defaults(fn=cmd_pipeline)
 
     a = p.parse_args(argv)
