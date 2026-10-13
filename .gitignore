@@ -1,0 +1,7 @@
+__pycache__/
+*.egg-info/
+work/
+work-smoke/
+mlruns/
+*.db
+.pytest_cache/
