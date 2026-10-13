@@ -1,0 +1,11 @@
+# Promotion gate for the perception detector.
+# A candidate is blocked if it is below the absolute floor, if its lineage is
+# incomplete, or if any metric regresses by more than the tolerance AND the
+# 95% paired-bootstrap interval of the difference lies entirely below zero.
+min_map: 0.30
+overall_tolerance: 0.01
+slice_tolerance: 0.03
+n_boot: 400
+ci: 0.95
+seed: 0
+slices: [lighting, fog, altitude_band]
