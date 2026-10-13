@@ -57,8 +57,6 @@ same shard digests (tested); changing one parameter produces a new id.
 | fusion, trained without sync correction | 0.690 | 0.823 | 0.475 | 0.771 | 0.822 | 0.664 | 0.562 |
 | fusion, trusted-vendor labels only (38% fewer frames) | 0.636 | 0.834 | 0.332 | 0.741 | 0.729 | 0.656 | 0.498 |
 
-%%SEEDS%%
-
 - **Reproducibility.** Two DDP runs with the same config and dataset version
   produced bit-identical weights.
 - **Fusion helps where the camera struggles.** LiDAR adds +0.05 mAP overall and
