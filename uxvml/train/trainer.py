@@ -145,6 +145,13 @@ def _worker(rank: int, world: int, cfg: TrainConfig, store_uri: str, tracking_ur
     if rank == 0:
         import mlflow  # noqa: F811
         mlflow.set_tracking_uri(tracking_uri)
+        if mlflow.get_experiment_by_name(cfg.experiment) is None:
+            # keep artifacts next to a SQLite tracking DB, not in the working
+            # directory (read-only in the container image)
+            loc = None
+            if tracking_uri.startswith("sqlite:///"):
+                loc = (Path(tracking_uri[len("sqlite:///"):]).parent / "mlartifacts").resolve().as_uri()
+            mlflow.create_experiment(cfg.experiment, artifact_location=loc)
         mlflow.set_experiment(cfg.experiment)
         mlflow.start_run(run_name=cfg.run_name)
         mlflow.log_params({k: (json.dumps(v) if isinstance(v, (list, dict)) else v)
